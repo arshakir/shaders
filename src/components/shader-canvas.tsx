@@ -111,6 +111,9 @@ export default function ShaderCanvas({ fragmentShader, isPlaying = true, classNa
         gl.viewport(0, 0, canvas.width, canvas.height)
       }
 
+      // CRITICAL FIX: Use the program before setting uniforms
+      gl.useProgram(program)
+
       // Set uniforms
       const time = (Date.now() - startTimeRef.current) * 0.001
       gl.uniform1f(timeLocation, time)
