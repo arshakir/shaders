@@ -1,4 +1,4 @@
-#define T (iTime * 15.)
+#define T (iTime * 15. + 5.5)
 
 // Tunnel and Sphere size
 const float tunnelS = 2.;

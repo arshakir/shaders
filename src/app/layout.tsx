@@ -2,8 +2,14 @@ import type React from "react"
 import { Inter } from "next/font/google"
 import "./globals.css"
 import { ThemeProvider } from "@/components/theme-provider"
+import { Fira_Code } from 'next/font/google'
 
 const inter = Inter({ subsets: ["latin"] })
+const firaCode = Fira_Code({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '600', '700'],
+  variable: '--font-fira-code',
+})
 
 export default function RootLayout({
   children,
@@ -16,7 +22,7 @@ export default function RootLayout({
         <title>Shader Portfolio</title>
         <meta name="description" content="A portfolio of fragment shader creations" />
       </head>
-      <body className={inter.className}>
+      <body className={firaCode.variable}>
         <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>

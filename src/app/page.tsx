@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Dialog, DialogContent, DialogDescription, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { ScrollArea } from "@/components/ui/scroll-area"
-import { Eye, Github, Linkedin, Mail, Play, Pause, ExternalLink, Moon, Sun, Code2, Monitor } from "lucide-react"
+import { Eye, Github, Linkedin, Mail, Play, Pause, ExternalLink, Moon, Sun, Code2, Monitor, X } from "lucide-react"
 import ShaderCanvas from "@/components/shader-canvas"
 import CodeBlock from "@/components/code-block"
 import { useTheme } from "@/components/theme-provider"
@@ -15,8 +15,7 @@ import cubeish from '../shaders/cubeish.glsl'
 import endless_tunnel from '../shaders/endless_tunnel.glsl'
 import time_warden from '../shaders/time_warden.glsl'
 
-const prologue = `
-precision mediump float;
+const prologue = `precision mediump float;
 uniform float iTime;
 uniform vec2 iResolution;
 `
@@ -63,6 +62,7 @@ export default function ShaderPortfolio() {
   const [selectedShader, setSelectedShader] = useState<(typeof shaders)[0] | null>(null)
   const [playingShader, setPlayingShader] = useState<number | null>(null)
   const [modalView, setModalView] = useState<"shader" | "code">("shader")
+  const [isModalOpen, setIsModalOpen] = useState(false)
   const { theme, setTheme } = useTheme()
 
   const handlePlayShader = (shaderId: number) => {
@@ -73,78 +73,92 @@ export default function ShaderPortfolio() {
     }
   }
 
-  // Theme colors based on current theme
+  // Enhanced theme colors
   const colors = {
-    background: theme === "dark" ? "#20202a" : "#E6E6F1",
-    foreground: theme === "dark" ? "#63718B" : "#708190",
-    card: theme === "dark" ? "#2C2E3E" : "#9CA6B9",
-    border: theme === "dark" ? "#44495e" : "#D5D4E0",
-    heading: theme === "dark" ? "#C6D0E9" : "#313449",
-    accent: theme === "dark" ? "#CDDBF9" : "#6A8CBC",
-    accentBright: theme === "dark" ? "#B8C9EA" : "#6E7EBF",
-    url: theme === "dark" ? "#B8DEEB" : "#7170C2",
-    badge: theme === "dark" ? "#44495e" : "#D5D4E0",
-    badgeText: theme === "dark" ? "#C6D0E9" : "#313449",
-    hoverBg: theme === "dark" ? "rgba(68, 73, 94, 0.3)" : "rgba(213, 212, 224, 0.3)",
-    shaderBg: theme === "dark" ? "#20202a" : "#FFFFFF",
-    modalBg: theme === "dark" ? "#20202a" : "#FFFFFF",
-    modalCard: theme === "dark" ? "#2C2E3E" : "#F8F9FA",
+    // Background colors
+    bgPrimary: theme === "dark" ? "#1a1b26" : "#fafafa",
+    bgSecondary: theme === "dark" ? "#24283b" : "#ffffff",
+    bgTertiary: theme === "dark" ? "#2f3349" : "#f4f4f5",
+
+    // Text colors
+    textPrimary: theme === "dark" ? "#c0caf5" : "#18181b",
+    textSecondary: theme === "dark" ? "#9aa5ce" : "#3f3f46",
+    textMuted: theme === "dark" ? "#565f89" : "#71717a",
+
+    // Accent colors
+    accentPrimary: theme === "dark" ? "#7aa2f7" : "#3b82f6",
+    accentSecondary: theme === "dark" ? "#bb9af7" : "#8b5cf6",
+
+    // Border colors
+    border: theme === "dark" ? "#3b4261" : "#e4e4e7",
+    borderLight: theme === "dark" ? "#414868" : "#f4f4f5",
+
+    // Special colors
+    success: theme === "dark" ? "#9ece6a" : "#22c55e",
+    warning: theme === "dark" ? "#e0af68" : "#f59e0b",
+    error: theme === "dark" ? "#f7768e" : "#ef4444",
+
+    // Shader specific
+    shaderBg: theme === "dark" ? "#1a1b26" : "#ffffff",
   }
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: colors.background }}>
+    <div className="min-h-screen transition-colors duration-300" style={{ backgroundColor: colors.bgPrimary }}>
       {/* Header */}
       <header
-        className="border-b backdrop-blur-sm"
-        style={{ borderColor: colors.border, backgroundColor: `${colors.card}10` }}
+        className="border-b backdrop-blur-sm transition-colors duration-300"
+        style={{
+          borderColor: colors.border,
+          backgroundColor: `${colors.bgSecondary}95`,
+        }}
       >
-        <div className="container mx-auto px-4 py-4 lg:py-6">
+        <div className="container mx-auto px-4 py-6 lg:py-8">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold" style={{ color: colors.heading }}>
+            <div className="animate-fade-in">
+              <h1 className="text-3xl sm:text-4xl font-bold tracking-tight" style={{ color: colors.textPrimary }}>
                 Shader Portfolio
               </h1>
-              <p className="mt-1 text-sm sm:text-base" style={{ color: colors.foreground }}>
+              <p className="mt-2 text-base sm:text-lg" style={{ color: colors.textSecondary }}>
                 Fragment Shader Creations & Experiments
               </p>
             </div>
-            <div className="flex items-center gap-2 sm:gap-4">
+            <div className="flex items-center gap-3 animate-slide-in">
               <Button
                 variant="ghost"
                 size="icon"
-                className="hover:bg-opacity-30 transition-colors"
-                style={{ color: colors.heading, backgroundColor: "transparent" }}
+                className="h-8 w-8 rounded-full transition-all duration-200 hover:scale-105"
+                style={{
+                  color: colors.textPrimary,
+                  backgroundColor: "transparent",
+                  boxShadow: theme === "dark" ? "0 0 20px rgba(123, 162, 247, 0.1)" : "0 2px 8px rgba(0, 0, 0, 0.04)",
+                }}
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
               >
-                {theme === "dark" ? (
-                  <Sun className="h-4 w-4 sm:h-5 sm:w-5" />
-                ) : (
-                  <Moon className="h-4 w-4 sm:h-5 sm:w-5" />
-                )}
+                {theme === "dark" ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
               </Button>
               <Button
                 variant="ghost"
                 size="icon"
-                className="hover:bg-opacity-30 transition-colors"
-                style={{ color: colors.heading, backgroundColor: "transparent" }}
+                className="h-8 w-8 rounded-full transition-all duration-200 hover:scale-105"
+                style={{ color: colors.textPrimary, backgroundColor: "transparent" }}
               >
-                <Github className="h-4 w-4 sm:h-5 sm:w-5" />
+                <Github className="h-5 w-5" />
               </Button>
               <Button
                 variant="ghost"
                 size="icon"
-                className="hover:bg-opacity-30 transition-colors"
-                style={{ color: colors.heading, backgroundColor: "transparent" }}
+                className="h-8 w-8 rounded-full transition-all duration-200 hover:scale-105"
+                style={{ color: colors.textPrimary, backgroundColor: "transparent" }}
               >
-                <Linkedin className="h-4 w-4 sm:h-5 sm:w-5" />
+                <Linkedin className="h-5 w-5" />
               </Button>
               <Button
                 variant="ghost"
                 size="icon"
-                className="hover:bg-opacity-30 transition-colors"
-                style={{ color: colors.heading, backgroundColor: "transparent" }}
+                className="h-10 w-10 rounded-full transition-all duration-200 hover:scale-105"
+                style={{ color: colors.textPrimary, backgroundColor: "transparent" }}
               >
-                <Mail className="h-4 w-4 sm:h-5 sm:w-5" />
+                <Mail className="h-5 w-5" />
               </Button>
             </div>
           </div>
@@ -152,24 +166,24 @@ export default function ShaderPortfolio() {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-6 lg:py-8">
+      <main className="container mx-auto px-4 py-8 lg:py-12">
         {/* Hero Section */}
-        <section className="text-center mb-6 lg:mb-8">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-bold mb-3 lg:mb-4" style={{ color: colors.heading }}>
+        <section className="text-center mb-12 lg:mb-16 animate-fade-in">
+          <h2
+            className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 tracking-tight"
+            style={{ color: colors.textPrimary }}
+          >
             Creative{" "}
             <span
               className="text-transparent bg-clip-text bg-gradient-to-r"
               style={{
-                backgroundImage: `linear-gradient(to right, ${colors.accent}, ${colors.accentBright})`,
+                backgroundImage: `linear-gradient(135deg, ${colors.accentPrimary}, ${colors.accentSecondary})`,
               }}
             >
               Shaders
             </span>
           </h2>
-          <p
-            className="text-base sm:text-lg max-w-xl lg:max-w-2xl mx-auto mb-4 lg:mb-6"
-            style={{ color: colors.foreground }}
-          >
+          <p className="text-lg sm:text-xl max-w-3xl mx-auto leading-relaxed" style={{ color: colors.textSecondary }}>
             This portfolio showcases my journey in shader programming and visual effects. Each shader represents hours
             of experimentation with mathematics, color theory, and creative coding. Feel free to explore the code and
             reach out if you have any questions!
@@ -177,26 +191,39 @@ export default function ShaderPortfolio() {
         </section>
 
         {/* Shader Grid */}
-        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6 mb-8 lg:mb-12">
-          {shaders.map((shader) => (
+        <section className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
+          {shaders.map((shader, index) => (
             <Card
               key={shader.id}
-              className="transition-all duration-300 group hover:shadow-lg"
+              className="group transition-all duration-300 hover:scale-[1.02] animate-fade-in border-0"
               style={{
-                backgroundColor: colors.card,
-                borderColor: playingShader === shader.id ? colors.accent : colors.border,
+                backgroundColor: colors.bgSecondary,
+                borderColor: playingShader === shader.id ? colors.accentPrimary : colors.border,
+                boxShadow:
+                  theme === "dark"
+                    ? playingShader === shader.id
+                      ? "0 0 20px rgba(123, 162, 247, 0.3)"
+                      : "0 4px 12px rgba(0, 0, 0, 0.3)"
+                    : playingShader === shader.id
+                      ? "0 8px 24px rgba(59, 130, 246, 0.15)"
+                      : "0 2px 8px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.08)",
+                animationDelay: `${index * 100}ms`,
               }}
             >
-              <CardHeader className="pb-3">
+              <CardHeader className="pb-4">
                 <div className="flex items-center justify-between">
-                  <CardTitle className="text-sm sm:text-base lg:text-lg" style={{ color: colors.heading }}>
+                  <CardTitle className="text-lg font-semibold" style={{ color: colors.textPrimary }}>
                     {shader.title}
                   </CardTitle>
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-8 w-8 hover:bg-opacity-30 transition-colors"
-                    style={{ color: colors.heading, backgroundColor: "transparent" }}
+                    className="h-9 w-9 rounded-full transition-all duration-200 hover:scale-110"
+                    style={{
+                      color: colors.textPrimary,
+                      backgroundColor: "transparent",
+                      boxShadow: playingShader === shader.id ? `0 0 10px ${colors.accentPrimary}40` : "none",
+                    }}
                     onClick={(e) => {
                       e.stopPropagation()
                       handlePlayShader(shader.id)
@@ -205,18 +232,21 @@ export default function ShaderPortfolio() {
                     {playingShader === shader.id ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
                   </Button>
                 </div>
-                <CardDescription className="text-xs sm:text-sm" style={{ color: colors.foreground }}>
+                <CardDescription className="text-sm leading-relaxed" style={{ color: colors.textSecondary }}>
                   {shader.description}
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-3 lg:space-y-4">
+              <CardContent className="space-y-4">
                 {/* Shader Preview */}
                 <div
-                  className="aspect-square rounded-lg overflow-hidden relative border cursor-pointer"
+                  className="aspect-square rounded-xl overflow-hidden relative border cursor-pointer transition-all duration-300"
                   style={{
-                    backgroundColor: theme === "light" ? "#FFFFFF" : colors.shaderBg,
-                    borderColor: theme === "light" ? "#E0E0E0" : colors.border,
-                    boxShadow: theme === "light" ? "0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06)" : "none",
+                    backgroundColor: colors.shaderBg,
+                    borderColor: colors.borderLight,
+                    boxShadow:
+                      theme === "dark"
+                        ? "inset 0 1px 0 rgba(255, 255, 255, 0.05)"
+                        : "inset 0 1px 0 rgba(255, 255, 255, 0.8)",
                   }}
                   onClick={() => handlePlayShader(shader.id)}
                 >
@@ -226,15 +256,18 @@ export default function ShaderPortfolio() {
                     className="w-full h-full"
                   />
                   {playingShader !== shader.id && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <div className="bg-black/50 rounded-full p-3">
+                    <div className="absolute inset-0 flex items-center justify-center bg-black/20 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                      <div
+                        className="rounded-full p-4 backdrop-blur-sm transition-all duration-300 hover:scale-110"
+                        style={{ backgroundColor: `${colors.accentPrimary}80` }}
+                      >
                         <Play className="h-8 w-8 text-white" />
                       </div>
                     </div>
                   )}
                   {playingShader === shader.id && (
-                    <div className="absolute top-2 right-2">
-                      <div className="bg-green-500 rounded-full p-1">
+                    <div className="absolute top-3 right-3">
+                      <div className="rounded-full p-2" style={{ backgroundColor: colors.success }}>
                         <div className="w-2 h-2 bg-white rounded-full animate-pulse"></div>
                       </div>
                     </div>
@@ -242,16 +275,16 @@ export default function ShaderPortfolio() {
                 </div>
 
                 {/* Tags */}
-                <div className="flex flex-wrap gap-1 lg:gap-2">
+                <div className="flex flex-wrap gap-2">
                   {shader.tags.map((tag) => (
                     <Badge
                       key={tag}
                       variant="secondary"
-                      className="text-xs"
+                      className="text-xs px-3 py-1 rounded-full font-medium transition-colors duration-200"
                       style={{
-                        backgroundColor: colors.badge,
-                        color: colors.badgeText,
-                        borderColor: colors.border,
+                        backgroundColor: colors.bgTertiary,
+                        color: colors.textSecondary,
+                        border: `1px solid ${colors.borderLight}`,
                       }}
                     >
                       {tag}
@@ -260,72 +293,84 @@ export default function ShaderPortfolio() {
                 </div>
 
                 {/* Actions */}
-                <div className="flex gap-2">
-                  <Dialog>
+                <div className="flex gap-3">
+                  <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
                     <DialogTrigger asChild>
                       <Button
                         variant="outline"
                         size="sm"
-                        className="flex-1 text-xs sm:text-sm hover:bg-opacity-30 transition-colors"
+                        className="flex-1 text-sm font-medium transition-all duration-200 hover:scale-[1.02]"
                         style={{
-                          backgroundColor: colors.card,
-                          color: colors.heading,
+                          backgroundColor: colors.bgSecondary,
+                          color: colors.textPrimary,
                           borderColor: colors.border,
+                          boxShadow: theme === "dark" ? "0 2px 4px rgba(0, 0, 0, 0.2)" : "0 1px 3px rgba(0, 0, 0, 0.1)",
                         }}
                         onClick={() => {
                           setSelectedShader(shader)
                           setModalView("shader")
+                          setPlayingShader(shader)
+                          setIsModalOpen(true)
                         }}
                       >
-                        <Eye className="h-3 w-3 sm:h-4 sm:w-4 mr-1 sm:mr-2" />
-                        <span className="hidden sm:inline">View Details</span>
-                        <span className="sm:hidden">Details</span>
+                        <Eye className="h-4 w-4 mr-2" />
+                        View Details
                       </Button>
                     </DialogTrigger>
                     <DialogContent
- className="fullscreen-dialog max-w-none w-screen h-screen max-h-screen p-0 gap-0 overflow-hidden m-0 rounded-none border-0"
+                      className="fixed top-4 left-4 right-4 bottom-4 !max-w-none !w-auto max-h-none h-auto p-0 gap-0 overflow-hidden rounded-2xl border-0 translate-x-0 translate-y-0 [&>button]:hidden"
                       style={{
-                        backgroundColor: colors.modalBg,
-                        borderColor: colors.border,
-                        position: 'fixed',
-                        inset: 0,
-                        width: '100vw',
-                        height: '100vh',
-                        maxWidth: 'none',
-                        maxHeight: 'none',
-                        transform: 'none',
-                        translate: 'none',
+                        backgroundColor: colors.bgPrimary,
+                        boxShadow:
+                          theme === "dark" ? "0 25px 50px rgba(0, 0, 0, 0.5)" : "0 25px 50px rgba(0, 0, 0, 0.15)",
+                        width: 'calc(100vw - 2rem)',
+                        left: '1rem',
+                        right: '1rem',
                       }}
                     >
                       {selectedShader && (
                         <div className="flex flex-col h-full">
-                          {/* Header */}
+                          {/* Enhanced Header */}
                           <div
-                            className="flex items-center justify-between p-6 border-b"
-                            style={{ borderColor: colors.border }}
+                            className="flex items-center justify-between p-4 border-b flex-shrink-0"
+                            style={{
+                              borderColor: colors.border,
+                              backgroundColor: colors.bgSecondary,
+                            }}
                           >
-                            <div className="flex-1">
-                              <DialogTitle className="text-2xl font-bold mb-2" style={{ color: colors.heading }}>
+                            <div className="flex-1 min-w-0 pr-4">
+                              <DialogTitle
+                                className="text-xl font-bold mb-1 tracking-tight"
+                                style={{ color: colors.textPrimary }}
+                              >
                                 {selectedShader.title}
                               </DialogTitle>
-                              <DialogDescription className="text-base" style={{ color: colors.foreground }}>
+                              <DialogDescription
+                                className="text-sm leading-relaxed"
+                                style={{ color: colors.textSecondary }}
+                              >
                                 {selectedShader.description}
                               </DialogDescription>
                             </div>
 
-                            {/* View Toggle */}
-                            <div className="flex items-center gap-2 mx-6">
+                            {/* Enhanced View Toggle */}
+                            <div className="flex items-center gap-2 mx-8">
                               <div
-                                className="flex rounded-lg p-1"
-                                style={{ backgroundColor: colors.modalCard, border: `1px solid ${colors.border}` }}
+                                className="flex rounded-xl p-1.5 border"
+                                style={{
+                                  backgroundColor: colors.bgTertiary,
+                                  borderColor: colors.borderLight,
+                                }}
                               >
                                 <Button
                                   variant="ghost"
                                   size="sm"
-                                  className={`px-4 py-2 transition-all ${modalView === "shader" ? "shadow-sm" : ""}`}
+                                  className={`px-6 py-3 rounded-md transition-all duration-200 font-medium ${
+                                    modalView === "shader" ? "shadow-sm" : ""
+                                  }`}
                                   style={{
-                                    backgroundColor: modalView === "shader" ? colors.accent : "transparent",
-                                    color: modalView === "shader" ? "white" : colors.heading,
+                                    backgroundColor: modalView === "shader" ? colors.accentPrimary : "transparent",
+                                    color: modalView === "shader" ? "white" : colors.textPrimary,
                                   }}
                                   onClick={() => setModalView("shader")}
                                 >
@@ -335,10 +380,12 @@ export default function ShaderPortfolio() {
                                 <Button
                                   variant="ghost"
                                   size="sm"
-                                  className={`px-4 py-2 transition-all ${modalView === "code" ? "shadow-sm" : ""}`}
+                                  className={`px-6 py-3 rounded-md transition-all duration-200 font-medium ${
+                                    modalView === "code" ? "shadow-sm" : ""
+                                  }`}
                                   style={{
-                                    backgroundColor: modalView === "code" ? colors.accent : "transparent",
-                                    color: modalView === "code" ? "white" : colors.heading,
+                                    backgroundColor: modalView === "code" ? colors.accentPrimary : "transparent",
+                                    color: modalView === "code" ? "white" : colors.textPrimary,
                                   }}
                                   onClick={() => setModalView("code")}
                                 >
@@ -348,16 +395,16 @@ export default function ShaderPortfolio() {
                               </div>
                             </div>
 
-                            {/* Actions */}
-                            <div className="flex items-center gap-2">
+                            {/* Enhanced Actions */}
+                            <div className="flex items-center gap-3 flex-shrink-0">
                               <Button
                                 variant="outline"
                                 size="sm"
                                 asChild
-                                className="transition-colors"
+                                className="px-6 py-3 font-medium transition-all duration-200 hover:scale-105"
                                 style={{
-                                  backgroundColor: colors.modalCard,
-                                  color: colors.url,
+                                  backgroundColor: colors.bgSecondary,
+                                  color: colors.accentPrimary,
                                   borderColor: colors.border,
                                 }}
                               >
@@ -366,21 +413,32 @@ export default function ShaderPortfolio() {
                                   ShaderToy
                                 </a>
                               </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-10 w-10 rounded-full transition-all duration-200 hover:scale-105"
+                                style={{ color: colors.textMuted }}
+                                onClick={() => setIsModalOpen(false)}
+                              >
+                                <X className="h-5 w-5" />
+                              </Button>
                             </div>
                           </div>
 
-                          {/* Content */}
-                          <div className="flex-1 p-6 overflow-hidden">
+                          {/* Enhanced Content */}
+                            <div className="flex-2 p-4 sm:p-6 lg:p-4 overflow-hidden">
                             {modalView === "shader" ? (
                               <div className="h-full flex flex-col">
                                 {/* Large Shader Display */}
                                 <div
-                                  className="flex-1 rounded-xl overflow-hidden relative border-2 min-h-[60vh]"
+  className="flex-1 rounded-2xl overflow-hidden relative border-2 min-h-0"
                                   style={{
-                                    backgroundColor: theme === "light" ? "#FFFFFF" : colors.shaderBg,
-                                    borderColor: theme === "light" ? "#E0E0E0" : colors.border,
+                                    backgroundColor: colors.shaderBg,
+                                    borderColor: colors.borderLight,
                                     boxShadow:
-                                      theme === "light" ? "0 4px 12px rgba(0,0,0,0.1)" : "0 4px 12px rgba(0,0,0,0.3)",
+                                      theme === "dark"
+                                        ? "0 8px 32px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.05)"
+                                        : "0 8px 32px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.8)",
                                   }}
                                 >
                                   <ShaderCanvas
@@ -388,26 +446,27 @@ export default function ShaderPortfolio() {
                                     isPlaying={playingShader === selectedShader.id}
                                     className="w-full h-full"
                                   />
-                                  {/* Floating Controls */}
-                                  <div className="absolute bottom-6 left-1/2 transform -translate-x-1/2">
+                                  {/* Enhanced Floating Controls */}
+                                  <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2">
                                     <Button
                                       onClick={() => handlePlayShader(selectedShader.id)}
                                       size="lg"
-                                      className="px-8 py-3 text-base font-medium shadow-lg backdrop-blur-sm"
+                                      className="px-10 py-4 text-lg font-semibold rounded-full backdrop-blur-md transition-all duration-200 hover:scale-105"
                                       style={{
-                                        backgroundColor: `${colors.accent}E6`,
+                                        backgroundColor: `${colors.accentPrimary}E6`,
                                         color: "white",
-                                        border: `1px solid ${colors.accent}`,
+                                        border: `2px solid ${colors.accentPrimary}`,
+                                        boxShadow: `0 8px 24px ${colors.accentPrimary}40`,
                                       }}
                                     >
                                       {playingShader === selectedShader.id ? (
                                         <>
-                                          <Pause className="h-5 w-5 mr-3" />
+                                          <Pause className="h-6 w-6 mr-3" />
                                           Pause Animation
                                         </>
                                       ) : (
                                         <>
-                                          <Play className="h-5 w-5 mr-3" />
+                                          <Play className="h-6 w-6 mr-3" />
                                           Play Animation
                                         </>
                                       )}
@@ -415,59 +474,69 @@ export default function ShaderPortfolio() {
                                   </div>
                                 </div>
 
-                                {/* Shader Info */}
-                                <div className="mt-6 flex flex-wrap items-center justify-between gap-4">
-                                  <div className="flex flex-wrap gap-2">
+                                {/* Enhanced Shader Info */}
+                                <div className="mt-8 flex flex-wrap items-center justify-between gap-6">
+                                  <div className="flex flex-wrap gap-3">
                                     {selectedShader.tags.map((tag) => (
                                       <Badge
                                         key={tag}
                                         variant="secondary"
-                                        className="text-sm px-3 py-1"
+                                        className="text-sm px-4 py-2 rounded-full font-medium"
                                         style={{
-                                          backgroundColor: colors.badge,
-                                          color: colors.badgeText,
-                                          borderColor: colors.border,
+                                          backgroundColor: colors.bgTertiary,
+                                          color: colors.textSecondary,
+                                          border: `1px solid ${colors.borderLight}`,
                                         }}
                                       >
                                         {tag}
                                       </Badge>
                                     ))}
                                   </div>
-                                  <p className="text-sm" style={{ color: colors.foreground }}>
+                                  <p className="text-sm font-medium" style={{ color: colors.textMuted }}>
                                     Created: {new Date(selectedShader.createdDate).toLocaleDateString()}
                                   </p>
                                 </div>
                               </div>
                             ) : (
                               <div className="h-full flex flex-col">
-                                {/* Code Header */}
+                                {/* Enhanced Code Header */}
                                 <div
-                                  className="flex items-center justify-between p-4 rounded-t-xl border-b"
+                                  className="flex items-center justify-between p-6 rounded-t-2xl border-b"
                                   style={{
-                                    backgroundColor: colors.modalCard,
+                                    backgroundColor: colors.bgSecondary,
                                     borderColor: colors.border,
                                   }}
                                 >
-                                  <h3 className="text-lg font-semibold" style={{ color: colors.heading }}>
+                                  <h3 className="text-xl font-semibold" style={{ color: colors.textPrimary }}>
                                     Fragment Shader Source Code
                                   </h3>
-                                  <div className="flex items-center gap-2 text-sm" style={{ color: colors.foreground }}>
+                                  <div
+                                    className="flex items-center gap-2 text-sm font-medium px-3 py-1 rounded-full"
+                                    style={{
+                                      color: colors.textSecondary,
+                                      backgroundColor: colors.bgTertiary,
+                                    }}
+                                  >
                                     <Code2 className="h-4 w-4" />
                                     GLSL
                                   </div>
                                 </div>
 
-                                {/* Code Display */}
+                                {/* Enhanced Scrollable Code Display */}
                                 <div
-                                  className="flex-1 rounded-b-xl overflow-hidden border-2 border-t-0"
+                                  className="flex-1 rounded-b-2xl overflow-hidden border-2 border-t-0"
                                   style={{
-                                    backgroundColor: colors.modalCard,
+                                    backgroundColor: colors.bgSecondary,
                                     borderColor: colors.border,
+                                    boxShadow:
+                                      theme === "dark"
+                                        ? "inset 0 2px 4px rgba(0, 0, 0, 0.2)"
+                                        : "inset 0 2px 4px rgba(0, 0, 0, 0.06)",
                                   }}
                                 >
-                                  <ScrollArea className="h-full">
+                                  <ScrollArea className="h-full max-h-[calc(100vh-14rem)]">
                                     <div className="p-6">
-                                      <CodeBlock code={selectedShader.fragmentShader} language="glsl" theme={theme} />
+                                      <CodeBlock code={prologue + selectedShader.fragmentShader + epilogue} language="glsl" theme={theme} />
                                     </div>
                                   </ScrollArea>
                                 </div>
@@ -482,21 +551,21 @@ export default function ShaderPortfolio() {
                   <Button
                     variant="outline"
                     size="sm"
-                    className="hover:bg-opacity-30 transition-colors"
+                    className="transition-all duration-200 hover:scale-105"
                     style={{
-                      backgroundColor: colors.card,
-                      color: colors.url,
+                      backgroundColor: colors.bgSecondary,
+                      color: colors.accentPrimary,
                       borderColor: colors.border,
                     }}
                     asChild
                   >
                     <a href={shader.shadertoyUrl} target="_blank" rel="noopener noreferrer">
-                      <ExternalLink className="h-3 w-3 sm:h-4 sm:w-4" />
+                      <ExternalLink className="h-4 w-4" />
                     </a>
                   </Button>
                 </div>
 
-                <p className="text-xs" style={{ color: colors.foreground }}>
+                <p className="text-xs font-medium" style={{ color: colors.textMuted }}>
                   Created: {new Date(shader.createdDate).toLocaleDateString()}
                 </p>
               </CardContent>
