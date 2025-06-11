@@ -13,7 +13,9 @@ const nextConfig: NextConfig = {
   trailingSlash: true,
   images: {
     unoptimized: true
-  }
+  },
+  basePath: '/shaders',
+  assetPrefix: '/shaders/',
 };
 
 export default nextConfig;
