@@ -10,7 +10,7 @@ interface ShaderCanvasProps {
 
 export default function ShaderCanvas({ fragmentShader, isPlaying = false, className = "" }: ShaderCanvasProps) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const animationRef = useRef<number>()
+  const animationRef = useRef<number | undefined>(undefined)
   const programRef = useRef<WebGLProgram | null>(null)
   const startTimeRef = useRef<number>(Date.now())
   const pausedTimeRef = useRef<number>(0)
@@ -26,7 +26,7 @@ export default function ShaderCanvas({ fragmentShader, isPlaying = false, classN
     const canvas = canvasRef.current
     if (!canvas) return
 
-    const gl = canvas.getContext("webgl2") || canvas.getContext("experimental-webgl")
+    const gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl") as WebGLRenderingContext
     if (!gl) {
       console.error("WebGL not supported")
       return

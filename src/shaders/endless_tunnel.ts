@@ -1,3 +1,4 @@
+export const endless_tunnel = `
 #define T (iTime * 15. + 5.5)
 
 // Tunnel and Sphere size
@@ -133,4 +134,4 @@ void mainImage(out vec4 o, in vec2 u) {
   c = c / d * 3. + vec3(0.145098039, 0.145098039, 0.152941176);
 
   o = vec4(c, 1.);
-}
+}`

@@ -11,9 +11,10 @@ import ShaderCanvas from "@/components/shader-canvas"
 import CodeBlock from "@/components/code-block"
 import { useTheme } from "@/components/theme-provider"
 
-import cubeish from '../shaders/cubeish.glsl'
-import endless_tunnel from '../shaders/endless_tunnel.glsl'
-import time_warden from '../shaders/time_warden.glsl'
+import {cubeish} from "@/shaders/cubeish"
+import {endless_tunnel} from '@/shaders/endless_tunnel'
+import {time_warden} from '@/shaders/time_warden'
+import {tree} from '@/shaders/tree'
 
 const prologue = `precision mediump float;
 uniform float iTime;
@@ -52,6 +53,15 @@ const shaders = [
     tags: ["Noise", "Terrain", "Procedural"],
     shadertoyUrl: "https://www.shadertoy.com/view/your-terrain-shader-id",
     fragmentShader: time_warden,
+    createdDate: "2024-01-05",
+  },
+  {
+    id: 4,
+    title: "Noise Terrain",
+    description: "Procedural terrain generation using Perlin noise with dynamic lighting and shadows.",
+    tags: ["Noise", "Terrain", "Procedural"],
+    shadertoyUrl: "https://www.shadertoy.com/view/your-terrain-shader-id",
+    fragmentShader: tree,
     createdDate: "2024-01-05",
   },
 ]
@@ -309,7 +319,7 @@ export default function ShaderPortfolio() {
                         onClick={() => {
                           setSelectedShader(shader)
                           setModalView("shader")
-                          setPlayingShader(shader)
+                          setPlayingShader(shader.id)
                           setIsModalOpen(true)
                         }}
                       >

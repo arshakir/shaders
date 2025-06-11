@@ -1,3 +1,4 @@
+export const time_warden = `
 #define PI 3.1415926538
 #define T (iTime + 3.)
 const vec3 COLOR = vec3(245., 213., 144.) / 255.;
@@ -133,4 +134,4 @@ void mainImage(out vec4 o, in vec2 u) {
   col += renderCenter(u) + renderSecond(u) + renderMinute(u) + renderHour(u);
 
   o = vec4(col, 1.0);
-}
+}`

@@ -1,3 +1,4 @@
+export const cubeish = `
 //data structure for plane representing equation ax + by + cz = d
 struct Plane {
   vec3 abc;
@@ -159,4 +160,4 @@ void mainImage(out vec4 fragColor, in vec2 fragCoord) {
 
   // Output to screen
   fragColor = vec4(col, 1.0);
-}
+}`
