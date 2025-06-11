@@ -1,4 +1,4 @@
-export const tree = `
+export const tranquil_waters = `
 #define T iTime
 const float PI = 3.1415926535897932384626433832795;
 
@@ -206,7 +206,7 @@ vec3 getTerrainColor(vec3 p, vec3 light, float hitwater) {
 
   return lightlevel * sh(p, light) *
              mix(TERRAIN_COLOR - noise(p.xz * 5. + vec2(p.y, p.y * 2.)) / 30.,
-                 GRASS_COLOR - noise(p.xz * 1.3) / 30., a) +
+                 GRASS_COLOR - noise(p.xz * 1.5) / 20., a) +
          (1. + normal.y) / 2. * SKY_COLOR / 30.;
 }
 
